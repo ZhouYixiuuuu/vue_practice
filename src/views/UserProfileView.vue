@@ -18,6 +18,9 @@ import ContentBase from "../components/ContentBase"
 import UserProfileInfo from "../components/UserProfileInfo"
 import UserProfilePosts from "../components/UserProfilePosts"
 import UserProfileWrite from "../components/UserProfileWrite"
+import { useRoute } from 'vue-router';
+import $ from 'jquery'
+import { useStore } from 'vuex'
 
 export default {
   name: "UserProfileView",
@@ -29,34 +32,28 @@ export default {
   },
 
   setup() {
-    const user = reactive({
-        id: 1,
-        username: "Yixiu Zhou", 
-        firstname: "Yixiu",
-        lastname: "Zhou",
-        followerCount: 0,
-        is_followered: false,
-    });
+    const store = useStore();
+    const route = useRoute();
+    const userID = route.params.userid;
+    const user = reactive({});
+    const posts = reactive({})
 
-    const posts = reactive({
-      count: 3,
-      posts:[
-        {
-          id: 1,
-          userid: 1,
-          content: "今天下雨了很开心",
-        },
-        {
-          id: 2,
-          userid: 1,
-          content: "今天吃饭了",
-        },
-        {
-          id: 3,
-          userid: 1,
-          content: "今天看书了",
-        }
-      ]
+    $.ajax({
+      url: 'https://app165.acapp.acwing.com.cn/myspace/getinfo/',
+      type: "get",
+      data: {
+        user_id: userID,
+      },
+      headers: {
+        'Authorization': 'Bearer ' + store.state.user.access,
+      },
+      success(resp) {
+        user.id = resp.id;
+        user.username = resp.username;
+        user.photo = resp.photo;
+        user.followerCount = resp.followerCount;
+        user.is_followered = resp.is_followed;
+      }
     })
 
     const follow = () => {

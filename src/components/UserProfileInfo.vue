@@ -4,13 +4,13 @@
       <div class="row">
         <div class="col-3">
           <img
-            src="https://cdn.acwing.com/media/user/profile/photo/156510_lg_176eb8429b.jpg"
+            :src="user.photo"
             alt=""
             class="img-fluid"
           />
         </div>
         <div class="col-9">
-          <div class="username">{{ fullname }}</div>
+          <div class="username">{{ user.username }}</div>
           <div class="fans">关注数：{{ user.followerCount }}</div>
           <button
             @click="follow"
@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import { computed } from "vue";
 
 export default {
   name: "UserProfileInfo",
@@ -46,10 +45,6 @@ export default {
     },
   },
   setup(props, context) {
-    let fullname = computed(
-      () => props.user.lastname + " " + props.user.firstname
-    );
-
     //定义函数，暴露出去
     const follow = () => {
       context.emit("follow");
@@ -60,7 +55,6 @@ export default {
     };
 
     return {
-      fullname,
       follow,
       unfollow,
     };

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import $ from 'jquery'
+import ModuleUser from './user'
 
 export default createStore({
   state: {
@@ -9,21 +9,8 @@ export default createStore({
   mutations: {
   },
   actions: {
-    login(context, data) {
-      $.ajax({
-        url: 'https://app165.acapp.acwing.com.cn/api/token/',
-        type: 'post',
-        data: {
-          username: data.username,
-          password: data.password,
-        },
-        success(resp) {
-          console.log(resp)
-        }
-
-      })
-    }
   },
   modules: {
+    user: ModuleUser,
   }
 })

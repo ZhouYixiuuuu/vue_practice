@@ -28,12 +28,12 @@ const routes = [
     component: RegisterView
   },
   {
-    path: '/userlist/:userID/',
+    path: '/userlist/',
     name: 'userlist',
     component: UserListView
   },
   {
-    path: '/userprofile/',
+    path: '/userprofile/:userid/',
     name: 'userprofile',
     component: UserProfileView
   },

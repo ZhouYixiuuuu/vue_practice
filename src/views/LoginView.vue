@@ -25,6 +25,7 @@
 import ContentBase from "../components/ContentBase";
 import { ref } from 'vue';
 import {useStore} from 'vuex'
+import router from '@/router/index'
 
 export default {
   name: "LoginView",
@@ -43,7 +44,10 @@ export default {
         username: username.value,
         password: password.value,
         success() {
-          console.log("success")
+          router.push({name: 'userlist'});
+        },
+        error() {
+          error_message.value = "用户名或密码错误";
         }
       })
     }
