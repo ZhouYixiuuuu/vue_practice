@@ -3,11 +3,7 @@
     <div class="card-body">
       <div class="row">
         <div class="col-3">
-          <img
-            :src="user.photo"
-            alt=""
-            class="img-fluid"
-          />
+          <img :src="user.photo" alt="" class="img-fluid" />
         </div>
         <div class="col-9">
           <div class="username">{{ user.username }}</div>
@@ -35,6 +31,8 @@
 </template>
 
 <script>
+import $ from "jquery";
+import { useStore } from "vuex";
 
 export default {
   name: "UserProfileInfo",
@@ -45,13 +43,42 @@ export default {
     },
   },
   setup(props, context) {
+    const store = useStore();
     //定义函数，暴露出去
     const follow = () => {
-      context.emit("follow");
+      $.ajax({
+        url: "https://app165.acapp.acwing.com.cn/myspace/follow/",
+        type: "post",
+        headers: {
+          Authorization: "Bearer " + store.state.user.access,
+        },
+        data: {
+          target_id: props.user.id,
+        },
+        success(resp) {
+          if (resp.result === "success") {
+            context.emit("follow");
+          }
+        },
+      });
     };
 
     const unfollow = () => {
-      context.emit("unfollow");
+      $.ajax({
+        url: "https://app165.acapp.acwing.com.cn/myspace/follow/",
+        type: "post",
+        headers: {
+          Authorization: "Bearer " + store.state.user.access,
+        },
+        data: {
+          target_id: props.user.id,
+        },
+        success(resp) {
+          if (resp.result === "success") {
+            context.emit("unfollow");
+          }
+        },
+      });
     };
 
     return {

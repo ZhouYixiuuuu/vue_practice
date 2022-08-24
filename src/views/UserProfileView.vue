@@ -3,10 +3,10 @@
     <div class="row">
         <div class="col-3">
             <UserProfileInfo @follow='follow' @unfollow='unfollow' :user="user" />
-            <UserProfileWrite @post_a_post='post_a_post'/>
+            <UserProfileWrite v-if="is_me" @post_a_post='post_a_post'/>
         </div>
         <div class="col-9">
-          <UserProfilePosts :posts="posts" />
+          <UserProfilePosts @delete_a_post="delete_a_post" :user="user" :posts="posts" />
         </div>
     </div>
   </ContentBase>
@@ -21,6 +21,7 @@ import UserProfileWrite from "../components/UserProfileWrite"
 import { useRoute } from 'vue-router';
 import $ from 'jquery'
 import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 export default {
   name: "UserProfileView",
@@ -34,7 +35,7 @@ export default {
   setup() {
     const store = useStore();
     const route = useRoute();
-    const userID = route.params.userid;
+    const userID = parseInt(route.params.userid);
     const user = reactive({});
     const posts = reactive({})
 
@@ -53,8 +54,25 @@ export default {
         user.photo = resp.photo;
         user.followerCount = resp.followerCount;
         user.is_followered = resp.is_followed;
-      }
+      },
+    }),
+
+    $.ajax({
+      url: 'https://app165.acapp.acwing.com.cn/myspace/post/',
+      type: "get",
+      data: {
+        user_id: userID,
+      },
+      headers: {
+        'Authorization': 'Bearer ' + store.state.user.access,
+      },
+      success(resp) {
+        posts.count = resp.length,
+        posts.posts = resp
+      },
     })
+
+    const is_me = computed( () => userID === store.state.user.id );
 
     const follow = () => {
       if (user.is_followered)
@@ -88,12 +106,19 @@ export default {
       )
     }
 
+    const delete_a_post = post_id => {
+      posts.posts = posts.posts.filter(post => post.id != post_id);
+      posts.count = posts.posts.length;
+    }
+
     return {
         user,
         follow,
         unfollow,
         posts,
         post_a_post,
+        is_me,
+        delete_a_post,
     }
   },
 };
